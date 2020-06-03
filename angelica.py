@@ -4,7 +4,7 @@ import pickle
 import signal
 import sys
 
-from flask import Flask, request
+from flask import Flask, Response, request
 from structure import query
 from utils import logchan as log #pylint: disable=import-error
 
@@ -28,9 +28,10 @@ app = Flask(__name__)
 def v1():
     rq_json = request.get_json()
     result = SCHEMA.execute(rq_json['query'], variables=rq_json['variables'])
-    return json.dumps(result.data), 200
+    return Response(json.dumps(result.data), mimetype='application/json')
+    #return json.dumps(result.data), 200
 
 if __name__ == "__main__":
-    log.info("Starting API server.", color=log.LoggingColors.GREEN)
+    log.info("Starting Angelica API server.", color=log.LoggingColors.GREEN)
     app.run(host='0.0.0.0', port=8080)
 

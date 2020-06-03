@@ -1,18 +1,29 @@
 import graphene
 
-class WordMeaning(graphene.ObjectType):
-    meaning = graphene.String(description="The word's meaning", required=True)
-    meaning_tags = graphene.String(description="The word's meaning tags")
-    meaning_abstract = graphene.String(description="The word's abstract")
+class WordJapanese(graphene.ObjectType):
+    word = graphene.String() # This could be blank for kana-only words
+    reading = graphene.String(required=True)
 
-    supplemental_info = graphene.String(
-        default_value="None",
-        description="This meaning's supplemental info")
+class WordLink(graphene.ObjectType):
+    text = graphene.String()
+    url = graphene.String()
+
+class WordSense(graphene.ObjectType):
+    # TODO
+    english_definitions = graphene.List(graphene.String)
+    parts_of_speech = graphene.List(graphene.String)
+    links = graphene.List(WordLink)
+    tags = graphene.List(graphene.String, description="The meaning's tags, e.g. kana only")
+    #restrictions = graphene.List(graphene.String)
+    see_also = graphene.List(graphene.String)
+    antonyms = graphene.List(graphene.String)
+    #source = graphene.List(graphene.String)
+    #info = graphene.List(graphene.String)
 
 class Word(graphene.ObjectType):
-    text = graphene.String(description="The word's text", required=True)
-    meaning = graphene.List(WordMeaning, description="The world's meaning(s)")
-    labels = graphene.List(graphene.String, description="The word's labels")
-    other_forms = graphene.String(description="The word's other forms")
-    notes = graphene.String(description="The word's notes")
-    exact_match = graphene.Boolean(description="If this word is an exact match with the search")
+    is_common = graphene.Boolean(description="The word's commonality")
+    japanese = graphene.List(WordJapanese)
+    jlpt = graphene.List(graphene.String, description="The word's JLPT level, if applicable.")
+    senses = graphene.List(WordSense, description="The word's meaning(s)")
+    slug = graphene.String(description="The word's slug")
+    tags = graphene.List(graphene.String, description="The word's tags, e.g. WaniKani level")
